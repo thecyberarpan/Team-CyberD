@@ -32,27 +32,27 @@
                             {% csrf_token %}
                             <div class="mb-5">
                                 <label for="fullName" class="form-label">Full name</label>
-                                <input type="text" name="fullname" id="fullName">
+                                <input type="text" name="fullname" id="fullName" required>
                             </div>
 
                             <div class="mb-5">
                                 <label for="exampleInputEmail1" class="form-label">Email address</label>
-                                <input type="email" name="email" id="exampleInputEmail1">
+                                <input type="email" name="email" id="exampleInputEmail1" required>
                             </div>
 
                             <div class="mb-5">
                                 <label for="phonenumber" class="form-label">Phone Number</label>
-                                <input type="number" name="number" id="phonenumber">
+                                <input type="number" name="number" id="phonenumber" required>
                             </div>
                             
                             <div class="mb-5">
                                 <label for="newPassword" class="form-label">Create Password</label>
-                                <input type="password" name="newpassword" id="newPassword">
+                                <input type="password" name="newpassword" id="newPassword" required>
                             </div>
 
                             <div class="mb-5">
                                 <label for="exampleInputPassword1" class="form-label">Re Password</label>
-                                <input type="password" name="confpassword" id="exampleInputPassword1">
+                                <input type="password" name="confpassword" id="exampleInputPassword1" required>
                             </div>
 
                             <div class="mb-5 rn-check-box">
