@@ -139,8 +139,8 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 
-# EMAIL_HOST_USER = 'youremail@gmail.com'
-# EMAIL_HOST_PASSWORD = 'app secrect code'
+EMAIL_HOST_USER = 'youremail@gmail.com'
+EMAIL_HOST_PASSWORD = 'app secrect code'
 
 
 # send_mail(

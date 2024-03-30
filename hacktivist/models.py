@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.utils import timezone
+from datetime import timedelta
 from .manager import *
 
 # create your models here
@@ -23,6 +25,10 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     forget_password_token = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
+    forget_password_token_expires_at = models.DateTimeField(default=timezone.now() + timedelta(minutes=1))
+
+    def is_token_expired(self):
+        return timezone.now() > self.forget_password_token_expires_at
 
     def __str__(self):
         return self.user.email

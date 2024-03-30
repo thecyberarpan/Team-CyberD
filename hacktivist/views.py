@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from datetime import timedelta
 from .helpers import *
 import uuid
 from .models import *
@@ -90,11 +91,16 @@ def ForgetPassword(request):
         # Generate a unique token
         token = str(uuid.uuid4())
 
+        # Expiration time is 5 minutes from now
+        expiration_time = timezone.now() + timedelta(minutes=1)  
+
         # Update the forget_password_token field in the user's profile
         try:
             profile_obj, created = Profile.objects.get_or_create(user=user_obj)
             profile_obj.forget_password_token = token
+            profile_obj.forget_password_token_expires_at = expiration_time
             profile_obj.save()
+
         except Exception as e:
             messages.error(request, "An error occurred. Try again.")
             return redirect('ForgetPassword')
@@ -112,6 +118,10 @@ def ChangePassword(request, token):
     context = {}
     try:
         profile_obj = Profile.objects.get(forget_password_token=token)
+        # Check if token has expired
+        if profile_obj.is_token_expired():
+            messages.error(request, "Link has expired. Please request a new one.")
+            return redirect('ForgetPassword')
 
         if request.method == 'POST':
             new_password = request.POST.get('new_password')
