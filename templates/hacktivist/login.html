@@ -27,6 +27,14 @@
                 <div class=" offset-2 col-lg-4 col-md-6 ml_md--0 ml_sm--0 col-sm-12">
                     <div class="form-wrapper-one">
                         <h4>Login</h4>
+                        {% if messages %}
+                            <ul class="messages" style="list-style: none;">
+                                {% for message in messages %}
+                                <li{% if message.tags %} class="{{ message.tags }}"{% endif %} style="color: green;">{{ message }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                        
                         <form action="" method="post">
                             {% csrf_token %}
                             <div class="mb-5">

@@ -14,36 +14,61 @@ User = get_user_model()
 # Create your views here.
 
 def Signup(request):
-    if request.method == 'POST':
-        fullname = request.POST.get('fullname')
-        email = request.POST.get('email')
-        number = request.POST.get('number')
-        newpassword = request.POST.get('newpassword')
-        confpassword = request.POST.get('confpassword')
+    try:
+        if request.method == 'POST':
+            fullname = request.POST.get('fullname')
+            email = request.POST.get('email')
+            number = request.POST.get('number')
+            newpassword = request.POST.get('newpassword')
+            confpassword = request.POST.get('confpassword')
 
-        if newpassword != confpassword:
-            messages.error(request, "Password are not matched")
-            return redirect('Signup')
-        else:
-            my_user = User.objects.create_user(email, newpassword)
+            if newpassword != confpassword:
+                messages.error(request, "Passwords do not match")
+                return redirect('Signup')
+
+            # Check if the email or phone number already exists in the database
+            if User.objects.filter(email=email).exists() or User.objects.filter(number=number).exists():
+                messages.error(request, "Email or phone number already exists")
+                return redirect('Signup')
+
+            # Create the user if email and phone number are unique
+            my_user = User.objects.create_user(email=email, password=newpassword)
+            my_user.fullname = fullname
+            my_user.number = number
             my_user.save()
-        return redirect('Login')
-    return render(request, 'hacktivist/sign-up.html')
+            messages.success(
+                request, "Account created successfully. Please log in.")
+            return redirect('Login')
+
+        return render(request, 'hacktivist/sign-up.html')
+        
+    except Exception as e:
+        print("-------- Unexpected Error: -------", e)
+        messages.error(request, "Unexpected Error. Try again later")
+        return redirect('Signup')
+
 
 
 def Login(request):
-    if request.method == 'POST':
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        user = authenticate(request, email=email, password=password)
-        print(user)
-        if user is not None:
-            login(request, user)
-            return redirect('Index')
-        else:
-            messages.error(request, "Invalid username or password")
-            return redirect('Login')
-    return render(request, 'hacktivist/login.html')
+    try:
+        if request.method == 'POST':
+            email = request.POST.get('email')
+            password = request.POST.get('password')
+            user = authenticate(request, email=email, password=password)
+            print("-------- Print user ---------", user)
+
+            if user is not None:
+                login(request, user)
+                return redirect('Index')
+            else:
+                messages.error(request, "Invalid username or password")
+                return redirect('Login')
+        return render(request, 'hacktivist/login.html')
+
+    except Exception as e:
+        print("------- Unexpected Error -----:", e)
+        messages.error(request, "Unexpected Error, Try again later")
+        return redirect('Login')
 
 
 def Logout(request):
@@ -92,12 +117,6 @@ def ChangePassword(request, token):
             new_password = request.POST.get('new_password')
             confirm_password = request.POST.get('confirm_password')
             user_id = request.POST.get('user_id')
-
-            # Print new password for debugging
-            print("New Password:", new_password)
-            # Print confirm password for debugging
-            print("Confirm Password:", confirm_password)
-            print("User ID:", user_id)  # Print user ID for debugging
 
             if not user_id:
                 messages.error(request, 'No user found')

@@ -7,7 +7,7 @@ from .manager import *
 class User(AbstractUser):
     username = None
     email = models.EmailField(unique=True)
-    mobile = models.CharField(max_length=14)
+    number = models.CharField(max_length=14)
     is_verified = models.BooleanField(default=False)
     email_token = models.CharField(max_length = 200, null=True, blank=True)
     forgot_password = models.CharField(max_length = 100, null=True,blank=True)
